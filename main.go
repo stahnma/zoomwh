@@ -1,6 +1,10 @@
 package main
 
+// TODO add basic auth since it's provided in the header
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"time"
@@ -10,11 +14,13 @@ import (
 
 type ZoomWebhook struct {
 	Payload struct {
-		AccountID string `json:"account_id"`
-		Object    struct {
+		PlainToken string `json:"plainToken"`
+		AccountID  string `json:"account_id"`
+		Object     struct {
 			UUID        string `json:"uuid"`
 			Participant struct {
 				LeaveTime         time.Time `json:"leave_time"`
+				JoinTime          time.Time `json:"join_time"`
 				UserID            string    `json:"user_id"`
 				UserName          string    `json:"user_name"`
 				RegistrantID      string    `json:"registrant_id"`
@@ -37,17 +43,41 @@ type ZoomWebhook struct {
 	Event   string `json:"event"`
 }
 
+type ChallengeResponse struct {
+	PlainToken     string `json:"plainToken"`
+	EncryptedToken string `json:"encryptedToken"`
+}
+
 func dostuff(c *gin.Context) {
-	c.JSON(http.StatusOK, "Did some stuff")
-	fmt.Println("Logging to stdout I think")
+
+	/*fmt.Println("Logging to stdout I think")
 	fmt.Println(c.Params)
-	fmt.Println(c.Request)
+	fmt.Println(c.Request) */
 
 	var jresp ZoomWebhook
 
 	if err := c.BindJSON(&jresp); err != nil {
 		// DO SOMETHING WITH THE ERROR
 		fmt.Println("There is an err", err)
+	}
+
+	// Trying to do the CRC
+
+	if jresp.Payload.PlainToken != "" {
+		var crc ChallengeResponse
+		crc.PlainToken = jresp.Payload.PlainToken
+		//todo load this from env var
+		zoom_secret := "020c3V6JTQKxQDucQnkXeg"
+		data := jresp.Payload.PlainToken
+		// Create a new HMAC by defining the hash type and the key (as byte array)
+		h := hmac.New(sha256.New, []byte(zoom_secret))
+		h.Write([]byte(data))
+		// Get result and encode as hexadecimal string
+		crc.EncryptedToken = hex.EncodeToString(h.Sum(nil))
+		fmt.Println(crc)
+		c.JSON(http.StatusOK, crc)
+		return
+
 	}
 	fmt.Println(jresp.Event) // meeting.participant_left
 	fmt.Println(jresp.Payload.Object.Participant.UserName)
