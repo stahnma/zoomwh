@@ -42,20 +42,7 @@ Checkout the source code
 1. You have access/permissions to create a slack webhook integration.
 1. You are comfortable putting a service on a public network. (I front mine with a reverse proxy).
 
-## Create a zoom app
 
-go to uri
-create an app
-fill out form
-toggle Event Subscriptions
-Press + Add Event Subscriptions
-You'll need a public endpoint for a listener -- which is where you'll run this app. You'll see a "validate" button. Zoom send validation payload through every so often for authentication and you need to respond to them with. The app has this built in and you just need to provide your `ZOOM_SECRET` (which is `secret token` on the zoom app configuration page).  
-
-Press the "Add Events" button.
-
-Click on validate. 
-
-Save.
 
 
 
