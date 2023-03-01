@@ -42,17 +42,13 @@ Checkout the source code
 1. You have access/permissions to create a slack webhook integration.
 1. You are comfortable putting a service on a public network. (I front mine with a reverse proxy).
 
+## Zoom
 
+See [Zoom Documenation](https://github.com/stahnma/zoom-wh/blob/main/docs/zoom_app_creation.md)
 
+## Slack
 
-
-## Create a slack webhook integration
-
-
-
-
-
-
+See [Slack App Documentation](https://github.com/stahnma/zoom-wh/blob/main/docs/slack_integrations.md)
 
 # LICENSE
 MIT
