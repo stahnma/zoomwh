@@ -1,3 +1,8 @@
 #!/bin/bash
 
-curl -X POST -H "Content-Type: application/json" -d @examples/participant_left.json http://localhost:9999/zoom
+if [ -z "$1" ] ; then
+	echo "Usage $0 json_file"
+	exit 1
+fi
+
+curl -X POST -H "Content-Type: application/json" -d @"$1" http://localhost:9999/zoom
