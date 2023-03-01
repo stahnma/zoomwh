@@ -5,4 +5,4 @@ if [ -z "$1" ] ; then
 	exit 1
 fi
 
-curl -X POST -H "Content-Type: application/json" -d @"$1" http://localhost:9999/zoom
+curl -X POST -H "Content-Type: application/json" -d @"$1" http://localhost:8888/
