@@ -89,6 +89,7 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 	postToSlackWebHook(msg)
+	sendIRC(msg)
 }
 
 func postToSlackWebHook(msg string) {
