@@ -21,7 +21,7 @@
 
 # Configure the webhook
 
-Take note of the URI. Copy it. You'll need to place it in `ZOOM_WH_SLACK_WH_URI` env var to run the application. 
+Take note of the URI. Copy it. You'll need to place it in `ZOOMWH_SLACK_WH_URI` env var to run the application. 
 ![slack_webhook_config](https://user-images.githubusercontent.com/6961/222060029-f3ac52fa-7722-497f-8f29-4b782745c44a.png)
 
 

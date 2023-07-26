@@ -11,5 +11,5 @@ build:  tidy
 	go build .
 
 clean:
-	rm -f zoom-wh
+	rm -f zoomwh
  
