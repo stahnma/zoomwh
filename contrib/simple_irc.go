@@ -18,7 +18,7 @@ func validateEnvVars(key string) {
 
 func main() {
 
-	ircEnable, _ := os.LookupEnv("ZOOM_WH_IRC_ENABLE")
+	ircEnable, _ := os.LookupEnv("ZOOMWH_IRC_ENABLE")
 	var (
 		ircServer   string
 		ircChannel  string
@@ -27,15 +27,15 @@ func main() {
 	)
 	if ircEnable == "true" {
 		// validate all IRC variables
-		validateEnvVars("ZOOM_WH_IRC_SERVER")
-		validateEnvVars("ZOOM_WH_IRC_CHANNEL")
-		validateEnvVars("ZOOM_WH_IRC_NICK")
-		validateEnvVars("ZOOM_WH_IRC_PASS")
+		validateEnvVars("ZOOMWH_IRC_SERVER")
+		validateEnvVars("ZOOMWH_IRC_CHANNEL")
+		validateEnvVars("ZOOMWH_IRC_NICK")
+		validateEnvVars("ZOOMWH_IRC_PASS")
 
-		ircServer, _ = os.LookupEnv("ZOOM_WH_IRC_SERVER")
-		ircChannel, _ = os.LookupEnv("ZOOM_WH_IRC_CHANNEL")
-		ircNick, _ = os.LookupEnv("ZOOM_WH_IRC_NICK")
-		ircPassword, _ = os.LookupEnv("ZOOM_WH_IRC_PASS")
+		ircServer, _ = os.LookupEnv("ZOOMWH_IRC_SERVER")
+		ircChannel, _ = os.LookupEnv("ZOOMWH_IRC_CHANNEL")
+		ircNick, _ = os.LookupEnv("ZOOMWH_IRC_NICK")
+		ircPassword, _ = os.LookupEnv("ZOOMWH_IRC_PASS")
 	}
 
 	irccon := irc.IRC(ircNick, ircNick)

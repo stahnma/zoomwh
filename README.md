@@ -16,7 +16,22 @@ This is a small program designed to run on a public network that can receive web
 you must set
 
 `ZOOM_SECRET` which is the `secret token` provided on your zoom application. This is how zoom knows your webhook listener is the intended target.
-`ZOOM_WH_SLACK_WH_URI` is the slack webhook uri. 
+
+## Slack Messaging
+`ZOOMWH_SLACK_WH_URI` is the slack webhook uri. 
+
+## IRC Messaging
+`ZOOMWH_IRC_ENABLE` true will enable this. Default is false.
+
+`ZOOMWH_IRC_SERVER` is the a URI and includes a port. Required. No Default.
+
+`ZOOMWH_IRC_NICK` the nick name to use when posting for IRC and authenticating against the server. Required. No Default.
+
+`ZOOMWH_IRC_AUTH_PASS` is the password to authenticate with for the IRC Server.
+
+`ZOOMWH_IRC_CHANNEL` is where to post the messages. There is not default. This is required if `ZOOMWH_IRC_ENABLE` is true.
+
+
 
 
 # Building
@@ -44,11 +59,11 @@ Checkout the source code
 
 ## Zoom
 
-See [Zoom Documenation](https://github.com/stahnma/zoom-wh/blob/main/docs/zoom_app_creation.md)
+See [Zoom Documenation](https://github.com/stahnma/zoomwh/blob/main/docs/zoom_app_creation.md)
 
 ## Slack
 
-See [Slack App Documentation](https://github.com/stahnma/zoom-wh/blob/main/docs/slack_integrations.md)
+See [Slack App Documentation](https://github.com/stahnma/zoomwh/blob/main/docs/slack_integrations.md)
 
 # LICENSE
 MIT

@@ -94,7 +94,7 @@ func processWebHook(c *gin.Context) {
 
 func postToSlackWebHook(msg string) {
 
-	slack_uri := os.Getenv("ZOOM_WH_SLACK_WH_URI")
+	slack_uri := os.Getenv("ZOOMWH_SLACK_WH_URI")
 	data := url.Values{
 		"payload": {"{\"text\": \"" + msg + "\"}"},
 	}
@@ -115,7 +115,7 @@ func validateEnvVars(key string) {
 func main() {
 
 	validateEnvVars("ZOOM_SECRET")
-	validateEnvVars("ZOOM_WH_SLACK_WH_URI")
+	validateEnvVars("ZOOMWH_SLACK_WH_URI")
 
 	router := gin.Default()
 	//TODO make this a configuration mount point
