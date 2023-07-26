@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"time"
 
@@ -90,19 +89,6 @@ func processWebHook(c *gin.Context) {
 	}
 	postToSlackWebHook(msg)
 	sendIRC(msg)
-}
-
-func postToSlackWebHook(msg string) {
-
-	slack_uri := os.Getenv("ZOOMWH_SLACK_WH_URI")
-	data := url.Values{
-		"payload": {"{\"text\": \"" + msg + "\"}"},
-	}
-	resp, err := http.PostForm(slack_uri, data)
-	fmt.Println(resp.Status)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func validateEnvVars(key string) {
