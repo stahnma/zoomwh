@@ -44,7 +44,6 @@ func sendIRC(message string) {
 	}
 	defer irccon.Quit()
 
-	message = "Hello, IRC world! (this is an automated message)"
 	irccon.Privmsg(ircChannel, message)
 
 	time.AfterFunc(1*time.Second, func() {
