@@ -17,6 +17,8 @@ you must set
 
 `ZOOM_SECRET` which is the `secret token` provided on your zoom application. This is how zoom knows your webhook listener is the intended target.
 
+`ZOOMWH_PORT` the port to put this webhook listener on. Default is 8888.
+
 ## Slack Messaging
 `ZOOMWH_SLACK_WH_URI` is the slack webhook uri. 
 
