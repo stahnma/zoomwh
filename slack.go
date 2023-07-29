@@ -10,6 +10,8 @@ import (
 
 func postToSlackWebHook(msg string) {
 
+	validateEnvVars("ZOOMWH_SLACK_WH_URI")
+
 	slack_uri := os.Getenv("ZOOMWH_SLACK_WH_URI")
 	data := url.Values{
 		"payload": {"{\"text\": \"" + msg + "\"}"},

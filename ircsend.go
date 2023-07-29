@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/thoj/go-ircevent"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 )
 
 func sendIRC(message string) {
-
+	fmt.Println("In sendIRC")
 	ircEnable, _ := os.LookupEnv("ZOOMWH_IRC_ENABLE")
 	var (
 		ircServer   string
