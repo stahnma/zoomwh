@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -54,7 +55,6 @@ func processWebHook(c *gin.Context) {
 	if gin.IsDebugging() {
 		// log incoming request if in DEBUG mode
 	}
-
 	var jresp ZoomWebhook
 	if err := c.BindJSON(&jresp); err != nil {
 		// DO SOMETHING WITH THE ERROR
@@ -87,8 +87,23 @@ func processWebHook(c *gin.Context) {
 	default:
 		return
 	}
-	postToSlackWebHook(msg)
-	sendIRC(msg)
+
+	zoom_enable := os.Getenv("ZOOMWH_SLACK_WH_URI")
+	irc_enable := os.Getenv("ZOOMWH_IRC_ENABLE")
+
+	// debug
+	if strings.ToLower(irc_enable) == "true" {
+		fmt.Println("IRC IS ENABLED")
+	}
+
+	if strings.ToLower(zoom_enable) == "true" {
+		postToSlackWebHook(msg)
+	} else if strings.ToLower(irc_enable) == "true" {
+		sendIRC(msg)
+	} else {
+		log.Fatal("You have no dispatchers configured (irc or slack). Quitting.")
+	}
+
 }
 
 func validateEnvVars(key string) {
@@ -101,10 +116,18 @@ func validateEnvVars(key string) {
 func main() {
 
 	validateEnvVars("ZOOM_SECRET")
-	validateEnvVars("ZOOMWH_SLACK_WH_URI")
 
 	router := gin.Default()
 	//TODO make this a configuration mount point
 	router.POST("/", processWebHook)
-	router.Run("localhost:8888")
+	port, set := os.LookupEnv("ZOOMWH_PORT")
+	if set {
+		port = os.Getenv("ZOOMWH_PORT")
+	} else {
+		port = "8888"
+	}
+
+	serverstring := "localhost:" + port
+	fmt.Println("Listening on " + serverstring)
+	router.Run(serverstring)
 }
