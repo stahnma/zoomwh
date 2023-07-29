@@ -2,7 +2,9 @@
 
 NAME=zoomwh
 
-all: build	
+default: build
+
+all: platforms
 
 fmt:
 	go fmt .
