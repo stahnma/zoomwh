@@ -3,4 +3,4 @@
 * What to do if IRC and ZOOM settings are around?
 * Make documentation env vars be a table
 * Separate slack sender out like IRC sender (but default to true)
-* Push to gh
+* Filter
