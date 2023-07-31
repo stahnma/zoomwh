@@ -80,7 +80,7 @@ func processWebHook(c *gin.Context) {
 
 	var msg string
 	switch jresp.Event {
-		//TODO enable custom messages
+	//TODO enable custom messages
 	case "meeting.participant_left":
 		msg = jresp.Payload.Object.Participant.UserName + " has left the drunk zoom."
 	case "meeting.participant_joined":
