@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/tls"
-	"fmt"
 	"github.com/thoj/go-ircevent"
 	"log"
 	"os"
