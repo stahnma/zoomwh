@@ -78,13 +78,17 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
+	msg_suffix := os.Getenv("ZOOMWH_MSG_SUFFIX")
+	if msg_suffix == "" {
+		msg_suffix = "the zoom meeting."
+	}
+
 	var msg string
 	switch jresp.Event {
-	//TODO enable custom messages
 	case "meeting.participant_left":
-		msg = jresp.Payload.Object.Participant.UserName + " has left the drunk zoom."
+		msg = jresp.Payload.Object.Participant.UserName + " has left " + msg_suffix
 	case "meeting.participant_joined":
-		msg = jresp.Payload.Object.Participant.UserName + " has joined the drunk zoom."
+		msg = jresp.Payload.Object.Participant.UserName + " has joined " + msg_suffix
 	default:
 		return
 	}

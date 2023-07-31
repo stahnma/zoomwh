@@ -19,6 +19,10 @@ you must set
 
 `ZOOMWH_PORT` the port to put this webhook listener on. Default is 8888.
 
+`ZOOMWH_MSG_SUFFIX` the name of the call after "Person has <left|joined>" it defaults to "the zoom meeting". 
+
+`ZOOMWH_MEETING_NAME` only notify on a particular meeting name. Default is any/all. Filter is a literal string, not a regex.
+
 ## Slack Messaging
 `ZOOMWH_SLACK_WH_URI` is the slack webhook uri. 
 
@@ -32,8 +36,6 @@ you must set
 `ZOOMWH_IRC_AUTH_PASS` is the password to authenticate with for the IRC Server.
 
 `ZOOMWH_IRC_CHANNEL` is where to post the messages. There is not default. This is required if `ZOOMWH_IRC_ENABLE` is true.
-
-
 
 
 # Building
