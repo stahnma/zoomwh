@@ -93,7 +93,6 @@ func processWebHook(c *gin.Context) {
 
 	// debug
 	if strings.ToLower(irc_enable) == "true" {
-		fmt.Println("IRC IS ENABLED")
 	}
 
 	if strings.ToLower(zoom_enable) == "true" {
