@@ -9,6 +9,7 @@ import (
 )
 
 func postToSlackWebHook(msg string) {
+	fmt.Println("Sending slack message")
 
 	validateEnvVars("ZOOMWH_SLACK_WH_URI")
 
