@@ -78,6 +78,16 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
+	// If the meeting is outside the topic scope, just ignore.
+	name, _ := os.LookupEnv("ZOOMWH_MEETING_NAME")
+	fmt.Println("Topic " + jresp.Payload.Object.Topic)
+	if name != jresp.Payload.Object.Topic && name != "" {
+		fmt.Println("Received hook but dropping due to topic.")
+		fmt.Println("Hook had topic '" + jresp.Payload.Object.Topic + "'")
+		fmt.Println("Filter only allows for " + name)
+		return
+	}
+
 	msg_suffix := os.Getenv("ZOOMWH_MSG_SUFFIX")
 	if msg_suffix == "" {
 		msg_suffix = "the zoom meeting."
