@@ -24,6 +24,8 @@ you must set
 `ZOOMWH_MEETING_NAME` only notify on a particular meeting name. Default is any/all. Filter is a literal string, not a regex.
 
 ## Slack Messaging
+`ZOOMWH_SLACK_ENABLE` should be set to 'true' if using this feature. It defaults to false.
+
 `ZOOMWH_SLACK_WH_URI` is the slack webhook uri. 
 
 ## IRC Messaging
