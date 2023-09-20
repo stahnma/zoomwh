@@ -47,6 +47,21 @@ Checkout the source code
     go mod tidy
     go build .
 
+# Running via systemd
+
+There is a unit file in the `contrib` directory. It should get you most of the way there.
+
+Basically, create a user by doing something like `useradd zoomwh`.
+
+Then copy the unit file in `/usr/lib/systemd/system`. 
+
+Make a file with your environment settings and place it in `/etc/sysconfig` or whereever your distribution does that stuff.
+
+`systemctl enable zoomwh.service`
+
+`systemctl start zoomwh.service`
+
+
 
 # Limitations
 1. This can currently be set up for one zoom meeting (because there is no logic looking what the meeting is called or anything) and one slack webhook (thus only one channel for notifications). Neither of these would be that difficult to extend or change, but I haven't had that need yet. 

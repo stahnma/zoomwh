@@ -1,0 +1,10 @@
+[Unit]
+Description=Zoom Webhook Processor
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/zoomwh.creds
+ExecStart=/usr/local/bin/zoomwh
+User=zoomwh
+
+[Install]
+WantedBy=multi-user.target
