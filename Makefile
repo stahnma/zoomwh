@@ -38,7 +38,7 @@ linux: linux-arm64 linux-amd64
 
 mac: darwin-arm64 darwin-amd64
 
-install:
+install: build
 	sudo install -p -m0755 zoomwh /usr/local/bin
 
  
