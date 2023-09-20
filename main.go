@@ -103,21 +103,28 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
-	zoom_enable := os.Getenv("ZOOMWH_SLACK_WH_URI")
+	slack_enable := os.Getenv("ZOOMWH_SLACK_ENABLE")
 	irc_enable := os.Getenv("ZOOMWH_IRC_ENABLE")
+	sent := 0
 
-	// debug
 	if strings.ToLower(irc_enable) == "true" {
+
 	}
 
-	if strings.ToLower(zoom_enable) == "true" {
+	if strings.ToLower(slack_enable) == "true" {
+		log.Println("Sending a slack message")
 		postToSlackWebHook(msg)
-	} else if strings.ToLower(irc_enable) == "true" {
+		sent = 1
+
+	}
+	if strings.ToLower(irc_enable) == "true" {
+		log.Println("Sending an IRC message")
 		sendIRC(msg)
-	} else {
+		sent = 1
+	}
+	if sent == 0 {
 		log.Fatal("You have no dispatchers configured (irc or slack). Quitting.")
 	}
-
 }
 
 func validateEnvVars(key string) {
