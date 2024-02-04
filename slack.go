@@ -1,25 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"net/url"
-	"os"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func postToSlackWebHook(msg string) {
-	fmt.Println("Sending slack message")
+	log.Debugln("(postToSlackWebHook) Sending slack message", msg)
 
-	validateEnvVars("ZOOMWH_SLACK_WH_URI")
-
-	slack_uri := os.Getenv("ZOOMWH_SLACK_WH_URI")
+	slack_uri := viper.GetString("slack_uri")
 	data := url.Values{
 		"payload": {"{\"text\": \"" + msg + "\"}"},
 	}
 	resp, err := http.PostForm(slack_uri, data)
-	fmt.Println(resp.Status)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorln(err)
 	}
+	log.Debugln(resp.Status)
 }
