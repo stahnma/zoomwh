@@ -55,7 +55,8 @@ func zoomCrcValidation(jresp ZoomWebhook) (bool, ChallengeResponse) {
 	log.Debugln("(zoomCrcValidation)")
 	zoom_secret := viper.GetString("zoom_secret")
 	var crc ChallengeResponse
-	if jresp.Payload.PlainToken != "" {
+	if jresp.Event == "endpoint.url_validation" {
+		log.Debugln("(zoomCrcValidation) Performing CRC verification.")
 		crc.PlainToken = jresp.Payload.PlainToken
 		data := jresp.Payload.PlainToken
 		// Create a new HMAC by defining the hash type and the key (as byte array)
@@ -64,17 +65,18 @@ func zoomCrcValidation(jresp ZoomWebhook) (bool, ChallengeResponse) {
 		// Get result and encode as hexadecimal string
 		crc.EncryptedToken = hex.EncodeToString(h.Sum(nil))
 		log.Infoln("CRC Validation: ", crc)
-
 		return true, crc
+	} else {
+		log.Debugln("(zoomCrcValidation) Not a CRC validation request.")
+		return false, crc
 	}
-	return false, crc
 
 }
 
-func applyMeetingFilters(jresp ZoomWebhook) bool {
+func filterMeeting(jresp ZoomWebhook) bool {
 	// If the meeting is outside the topic scope, just ignore.
 	name := viper.GetString("meeting_name")
-	fmt.Println("Topic " + jresp.Payload.Object.Topic)
+	log.Debugln("applyMeetingFilters) Topic " + jresp.Payload.Object.Topic)
 	if name != jresp.Payload.Object.Topic && name != "" {
 		log.Infoln("Received hook but dropping due to topic being filtered.")
 		log.Debugln("(applyMeetingFilter) Hook had topic '" + jresp.Payload.Object.Topic + "'")
@@ -109,7 +111,7 @@ func processWebHook(c *gin.Context) {
 	}
 
 	// Handle Zoom Webhook CRC validation
-	if jresp.Payload.PlainToken != "" {
+	if jresp.Event == "endpoint.url_validation" {
 		crcvalid, crc := zoomCrcValidation(jresp)
 		if crcvalid {
 			log.Debugln("(processWebHook) CRC validation successful. Returning CRC response.")
@@ -121,7 +123,7 @@ func processWebHook(c *gin.Context) {
 			return
 		}
 	}
-	if applyMeetingFilters(jresp) {
+	if filterMeeting(jresp) {
 		return
 	}
 
@@ -133,6 +135,8 @@ func dispatchMessage(msg string) {
 
 	slack_enable := viper.GetString("slack_enable")
 	irc_enable := viper.GetString("irc_enable")
+	log.Debugln("(dispatchMessage) Slack enabled: " + slack_enable)
+	log.Debugln("(dispatchMessage) IRC enabled: " + irc_enable)
 	sent := 0
 
 	if strings.ToLower(slack_enable) == "true" {
@@ -155,12 +159,15 @@ func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
 
-	viper.SetDefault("port", "2003")
+	viper.SetConfigType("env")
+
+	viper.SetDefault("port", "8888")
 	viper.SetDefault("slack_enable", "true")
 	viper.SetDefault("irc_enable", "false")
 	viper.SetDefault("msg_suffix", "the zoom meeting.")
 
 	viper.BindEnv("port", "ZOOMWH_PORT")
+	viper.BindEnv("slack_enable", "ZOOMWH_SLACK_ENABLE")
 
 	bugout := false
 	if value := os.Getenv("ZOOM_SECRET"); value == "" {
@@ -171,12 +178,22 @@ func init() {
 	}
 
 	// Slack Specifics
+	viper.GetString("slack_enable")
 	if value := os.Getenv("ZOOMWH_SLACK_ENABLE"); value == "false" {
 		log.Infoln("Slack is notification disabled.")
+		viper.Set("slack_enable", "false")
 	} else {
-		viper.BindEnv("slack_webhook_uri", "ZOOMWH_SLACK_WH_URI")
+		viper.MustBindEnv("slack_webhook_uri", "ZOOMWH_SLACK_WH_URI")
+		slack_webhook_uri := viper.GetString("slack_webhook_uri")
+		if slack_webhook_uri == "" {
+			log.Errorln("You must set ZOOMWH_SLACK_WH_URI environment variable unless ZOOMWH_SLACK_ENABLE=false.")
+			bugout = true
+		}
+		log.Debugln("I expect this to panic here")
+		log.Infoln("woop:", viper.GetString("slack_webhook_uri"))
 	}
 
+	// Filter Specifics
 	if value := os.Getenv("ZOOMWH_MEETING_NAME"); value == "" {
 		viper.BindEnv("meeting_filter", "ZOOMWH_MEETING_NAME")
 	}
@@ -185,8 +202,10 @@ func init() {
 	value, ok := os.LookupEnv("ZOOMWH_IRC_ENABLE")
 	if value == "false" || !ok {
 		log.Infoln("IRC notifications are disabled.")
-		viper.Set("irc_enabled", "false")
+		viper.Set("irc_enable", "false")
 	} else {
+		log.Infoln("IRC notifications are enabled.")
+		viper.Set("irc_enable", "true")
 		// Four IRC variables are required if IRC is enabled
 		if value := os.Getenv("ZOOMWH_IRC_SERVER"); value == "" {
 			log.Errorln("You must set ZOOMWH_IRC_SERVER environment variable if ZOOMWH_IRC_ENABLE is true.")
@@ -213,6 +232,9 @@ func init() {
 			viper.MustBindEnv("irc_pass", "ZOOMWH_IRC_PASS")
 		}
 	}
+
+	// viper dump
+	fmt.Println(viper.AllSettings())
 
 	viper.MustBindEnv("zoom_secret", "ZOOM_SECRET")
 	if os.Getenv("ZOOMWH_MSG_SUFFIX") != "" {
