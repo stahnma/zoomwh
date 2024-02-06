@@ -2,33 +2,22 @@ package main
 
 import (
 	"crypto/tls"
-	"fmt"
-	"github.com/thoj/go-ircevent"
-	"log"
-	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"github.com/thoj/go-ircevent"
 )
 
 func sendIRC(message string) {
-	fmt.Println("Sending IRC notification")
-	ircEnable, _ := os.LookupEnv("ZOOMWH_IRC_ENABLE")
-	var (
-		ircServer   string
-		ircChannel  string
-		ircNick     string
-		ircPassword string
-	)
+	log.Debugln("(sendIRC) Sending IRC notification", message)
+	ircEnable := viper.GetString("irc_enable")
+	var ircServer, ircChannel, ircNick, ircPassword string
 	if ircEnable == "true" {
-		// validate all IRC variables
-		validateEnvVars("ZOOMWH_IRC_SERVER")
-		validateEnvVars("ZOOMWH_IRC_CHANNEL")
-		validateEnvVars("ZOOMWH_IRC_NICK")
-		validateEnvVars("ZOOMWH_IRC_PASS")
-
-		ircServer, _ = os.LookupEnv("ZOOMWH_IRC_SERVER")
-		ircChannel, _ = os.LookupEnv("ZOOMWH_IRC_CHANNEL")
-		ircNick, _ = os.LookupEnv("ZOOMWH_IRC_NICK")
-		ircPassword, _ = os.LookupEnv("ZOOMWH_IRC_PASS")
+		ircServer = viper.GetString("irc_server")
+		ircChannel = viper.GetString("irc_channel")
+		ircNick = viper.GetString("irc_nick")
+		ircPassword = viper.GetString("irc_pass")
 	}
 
 	irccon := irc.IRC(ircNick, ircNick)
@@ -41,7 +30,7 @@ func sendIRC(message string) {
 
 	err := irccon.Connect(ircServer)
 	if err != nil {
-		log.Fatal("Error connecting to IRC server:", err)
+		log.Errorln("Error connecting to IRC server:", err)
 	}
 	defer irccon.Quit()
 
@@ -50,6 +39,5 @@ func sendIRC(message string) {
 	time.AfterFunc(1*time.Second, func() {
 		irccon.Quit()
 	})
-
 	irccon.Loop()
 }
