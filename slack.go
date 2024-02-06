@@ -16,6 +16,7 @@ func parseAndSplitSlackHooks(msg string) {
 	splitStrings := strings.Split(slackHooks, ",")
 	for i, s := range splitStrings {
 		splitStrings[i] = strings.ReplaceAll(s, "'", "")
+		splitStrings[i] = strings.ReplaceAll(s, "\"", "")
 	}
 	size := len(splitStrings)
 	log.Debugln("(parseAndSplitSlackHooks) Found", size, "slack hooks.")
