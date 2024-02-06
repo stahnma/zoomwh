@@ -141,7 +141,7 @@ func dispatchMessage(msg string) {
 
 	if strings.ToLower(slack_enable) == "true" {
 		log.Debugln("(dispatchMessage) Sending a slack message")
-		postToSlackWebHook(msg)
+		parseAndSplitSlackHooks(msg)
 		sent = 1
 
 	}
@@ -189,8 +189,6 @@ func init() {
 			log.Errorln("You must set ZOOMWH_SLACK_WH_URI environment variable unless ZOOMWH_SLACK_ENABLE=false.")
 			bugout = true
 		}
-		log.Debugln("I expect this to panic here")
-		log.Infoln("woop:", viper.GetString("slack_webhook_uri"))
 	}
 
 	// Filter Specifics
