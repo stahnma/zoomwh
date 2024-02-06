@@ -1,25 +1,37 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"net/url"
-	"os"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
-func postToSlackWebHook(msg string) {
-	fmt.Println("Sending slack message")
+func parseAndSplitSlackHooks(msg string) {
+	log.Debugln("(parseAndSplitSlackHooks) Parsing and splitting slack hooks.")
+	slackHooks := viper.GetString("slack_webhook_uri")
 
-	validateEnvVars("ZOOMWH_SLACK_WH_URI")
+	splitStrings := strings.Split(slackHooks, ",")
+	for i, s := range splitStrings {
+		splitStrings[i] = strings.ReplaceAll(s, "'", "")
+	}
+	size := len(splitStrings)
+	log.Debugln("(parseAndSplitSlackHooks) Found", size, "slack hooks.")
+	for _, entry := range splitStrings {
+		postToSlack(msg, entry)
+	}
+}
 
-	slack_uri := os.Getenv("ZOOMWH_SLACK_WH_URI")
+func postToSlack(msg string, uri string) {
+	log.Debugln("(postToSlack) Posting to each slack hook.", uri, msg)
 	data := url.Values{
 		"payload": {"{\"text\": \"" + msg + "\"}"},
 	}
-	resp, err := http.PostForm(slack_uri, data)
-	fmt.Println(resp.Status)
+	resp, err := http.PostForm(uri, data)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorln("Error posting to slack:", err)
 	}
+	log.Debugln(resp.Status)
 }
