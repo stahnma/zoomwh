@@ -1,4 +1,9 @@
-.environment
 *.creds
-bin
 .env
+.environment
+.flox
+bin
+config
+data
+environment
+image.png
